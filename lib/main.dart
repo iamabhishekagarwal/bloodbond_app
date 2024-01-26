@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'flutter demo',
+      debugShowCheckedModeBanner: false,
       home: SplashScreen(child: LoginPage()),
     );
   }
