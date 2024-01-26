@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "837735829285",
+    "project_id": "flutter-firebase-fb309",
+    "storage_bucket": "flutter-firebase-fb309.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837735829285:android:4e208e0b189311019ed4cc",
+        "android_client_info": {
+          "package_name": "com.example.bloodbond_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtWH8Xhkj6cXKzpICQM638jjgqss9ukEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
