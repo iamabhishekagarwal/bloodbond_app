@@ -1,15 +1,38 @@
 import 'package:bloodbond_app/features/user_auth/presentation/pages/homepage.dart';
+import 'package:bloodbond_app/features/user_auth/presentation/pages/rootpage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:sign_in_button/sign_in_button.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth.authStateChanges().listen((event) {
+      setState(() {
+        _user = event;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Bloodbond"),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color.fromARGB(199, 255, 187, 0),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -60,15 +83,23 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(
                     height: 30,
                   ),
+                  SizedBox(
+                    child: SignInButton(
+                      Buttons.google,
+                      text: 'Signup with google',
+                      onPressed: () {
+                        _handleGoogleSignIn();
+                      },
+                    ),
+                    height: 50,
+                    width: 220,
+                  ),
                   MaterialButton(
                     onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => RootPage()),
-                          (route) => false);
+                      _handleEmailPasswordSignin();
                     },
                     minWidth: double.infinity,
-                    color: Colors.redAccent,
+                    color: Color.fromARGB(199, 255, 187, 0),
                     textColor: Colors.white,
                     child: const Text("Login"),
                   ),
@@ -80,50 +111,31 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-}
 
-class RootPage extends StatefulWidget {
-  const RootPage({super.key});
-
-  @override
-  State<RootPage> createState() => _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
-  int currentPage = 0;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("BloodBond"),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {},
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person), // Add your action icon here
-            onPressed: () {
-              // Do something when the action icon is pressed
-            },
+  void _handleGoogleSignIn() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+        await _auth.signInWithCredential(credential);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Homepage(),
           ),
-        ],
-      ),
-      body: const Homepage(),
-      bottomNavigationBar: NavigationBar(
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: "home"),
-          NavigationDestination(icon: Icon(Icons.person), label: "person"),
-          NavigationDestination(icon: Icon(Icons.graphic_eq), label: "stats")
-        ],
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPage = index;
-          });
-        },
-        selectedIndex: currentPage,
-      ),
-    );
+        );
+      }
+    } catch (error) {
+      print(error);
+    }
   }
+
+  void _handleEmailPasswordSignin() async {}
 }
