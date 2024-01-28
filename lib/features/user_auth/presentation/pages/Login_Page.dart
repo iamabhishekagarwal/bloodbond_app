@@ -1,8 +1,6 @@
 import 'package:bloodbond_app/features/user_auth/presentation/pages/homepage.dart';
-import 'package:bloodbond_app/features/user_auth/presentation/pages/rootpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -84,6 +82,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: 30,
                   ),
                   SizedBox(
+                    height: 50,
+                    width: 220,
                     child: SignInButton(
                       Buttons.google,
                       text: 'Signup with google',
@@ -91,15 +91,13 @@ class _LoginPageState extends State<LoginPage> {
                         _handleGoogleSignIn();
                       },
                     ),
-                    height: 50,
-                    width: 220,
                   ),
                   MaterialButton(
                     onPressed: () {
                       _handleEmailPasswordSignin();
                     },
                     minWidth: double.infinity,
-                    color: Color.fromARGB(199, 255, 187, 0),
+                    color: const Color.fromARGB(199, 255, 187, 0),
                     textColor: Colors.white,
                     child: const Text("Login"),
                   ),
@@ -128,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Homepage(),
+            builder: (context) => const Homepage(),
           ),
         );
       }
