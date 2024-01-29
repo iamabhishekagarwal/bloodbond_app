@@ -1,4 +1,5 @@
 import 'package:bloodbond_app/features/user_auth/presentation/pages/homepage.dart';
+import 'package:bloodbond_app/notification_service.dart';
 import 'package:flutter/material.dart';
 
 class RootPage extends StatefulWidget {
@@ -8,9 +9,23 @@ class RootPage extends StatefulWidget {
   State<RootPage> createState() => _RootPageState();
 }
 
-
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
+
+  NotificationServices notificationServices = NotificationServices();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationServices.requestNotificationPermission();
+    notificationServices.foregroundMessage();
+    notificationServices.firebaseInit(context);
+    notificationServices.isRefreshToken();
+    notificationServices.getDeviceToken().then((value) {
+      print("Device Token $value");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +45,7 @@ class _RootPageState extends State<RootPage> {
           ),
         ],
       ),
-      body: const Homepage(),
+      body: Homepage(),
       bottomNavigationBar: NavigationBar(
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: "home"),
