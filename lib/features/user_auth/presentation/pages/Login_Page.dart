@@ -1,8 +1,6 @@
 import 'package:bloodbond_app/features/user_auth/presentation/pages/homepage.dart';
-import 'package:bloodbond_app/features/user_auth/presentation/pages/rootpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -30,34 +28,45 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Bloodbond"),
-        backgroundColor: const Color.fromARGB(199, 255, 187, 0),
+        //appBar: AppBar(),
+        body: Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+              "assets/images/background_image.jpg"), // Replace with your image path
+          fit: BoxFit.cover,
+        ),
       ),
-      body: Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Login',
-            style: TextStyle(
-              fontSize: 35,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+          const Padding(
+            padding: EdgeInsets.only(left: 25.0),
+            child: Text(
+              'Login',
+              style: TextStyle(
+                fontSize: 35,
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            padding: const EdgeInsets.only(top: 70, left: 20, right: 20),
             child: Form(
               child: Column(
                 children: [
+                  const SizedBox(height: 200),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      label: Text("Email"),
+                    decoration: InputDecoration(
+                      label: const Text("Username"),
                       hintText: 'Bloodbond@example.com',
-                      prefixIcon: Icon(Icons.email),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.email),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
                     ),
                     onChanged: (value) {},
                     validator: (value) {
@@ -69,11 +78,13 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextFormField(
                     keyboardType: TextInputType.visiblePassword,
-                    decoration: const InputDecoration(
-                      label: Text("Password"),
+                    decoration: InputDecoration(
+                      label: const Text("Password"),
                       hintText: 'Enter password',
-                      prefixIcon: Icon(Icons.password),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.password),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
                     ),
                     onChanged: (value) {},
                     validator: (value) {
@@ -84,23 +95,28 @@ class _LoginPageState extends State<LoginPage> {
                     height: 30,
                   ),
                   SizedBox(
+                    height: 50,
+                    width: 220,
                     child: SignInButton(
                       Buttons.google,
-                      text: 'Signup with google',
+                      //text: 'Signup with google',
                       onPressed: () {
                         _handleGoogleSignIn();
                       },
                     ),
-                    height: 50,
-                    width: 220,
                   ),
                   MaterialButton(
                     onPressed: () {
                       _handleEmailPasswordSignin();
                     },
-                    minWidth: double.infinity,
-                    color: Color.fromARGB(199, 255, 187, 0),
+                    // minWidth: double.infinity,
+                    minWidth: 100,
+                    color: Color.fromARGB(198, 177, 39, 179),
                     textColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20), // Adjusted border radius
+                    ),
                     child: const Text("Login"),
                   ),
                 ],
@@ -109,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   void _handleGoogleSignIn() async {
@@ -125,15 +141,16 @@ class _LoginPageState extends State<LoginPage> {
           idToken: googleSignInAuthentication.idToken,
         );
         await _auth.signInWithCredential(credential);
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Homepage(),
+            builder: (context) => const Homepage(),
           ),
         );
       }
     } catch (error) {
-      print(error);
+      debugPrint("error");
     }
   }
 
