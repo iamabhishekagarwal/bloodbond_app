@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAkp8-uBldaVJxHaCrXeeMLCo6Yay599jo',
-    appId: '1:751364244973:android:f4a4eb17745b75fe3f13e4',
+    appId: '1:751364244973:android:198dad0f2411b68f3f13e4',
     messagingSenderId: '751364244973',
     projectId: 'bbauth-9ef11',
     storageBucket: 'bbauth-9ef11.appspot.com',
@@ -63,21 +63,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDqKR619gmJb37c9weXDF1CXAsRhTj1n7k',
-    appId: '1:751364244973:ios:12e28e357161acb83f13e4',
+    appId: '1:751364244973:ios:c1b633fe1c8fab033f13e4',
     messagingSenderId: '751364244973',
     projectId: 'bbauth-9ef11',
     storageBucket: 'bbauth-9ef11.appspot.com',
-    iosClientId: '751364244973-k3i146eipp1lp8evkt3panuehq2ep2vp.apps.googleusercontent.com',
-    iosBundleId: 'com.example.bbAuth',
+    androidClientId: '751364244973-60m2oi0ro1fh3l6khgsjui7kt6mc1vda.apps.googleusercontent.com',
+    iosClientId: '751364244973-ean4fevratukrbsnvfidc8f0vbhiukpv.apps.googleusercontent.com',
+    iosBundleId: 'com.example.bloodbondApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDqKR619gmJb37c9weXDF1CXAsRhTj1n7k',
-    appId: '1:751364244973:ios:151b41b2da8360073f13e4',
+    appId: '1:751364244973:ios:820b0639b22c025e3f13e4',
     messagingSenderId: '751364244973',
     projectId: 'bbauth-9ef11',
     storageBucket: 'bbauth-9ef11.appspot.com',
-    iosClientId: '751364244973-14tulnafubrucu4p98s49a6r9agb90af.apps.googleusercontent.com',
-    iosBundleId: 'com.example.bbAuth.RunnerTests',
+    androidClientId: '751364244973-60m2oi0ro1fh3l6khgsjui7kt6mc1vda.apps.googleusercontent.com',
+    iosClientId: '751364244973-tua6mrmvsu873gl6qijl52odkm8t0dmn.apps.googleusercontent.com',
+    iosBundleId: 'com.example.bloodbondApp.RunnerTests',
   );
 }

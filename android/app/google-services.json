@@ -1,26 +1,87 @@
 {
   "project_info": {
-    "project_number": "837735829285",
-    "project_id": "flutter-firebase-fb309",
-    "storage_bucket": "flutter-firebase-fb309.appspot.com"
+    "project_number": "751364244973",
+    "project_id": "bbauth-9ef11",
+    "storage_bucket": "bbauth-9ef11.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:837735829285:android:4e208e0b189311019ed4cc",
+        "mobilesdk_app_id": "1:751364244973:android:f4a4eb17745b75fe3f13e4",
         "android_client_info": {
-          "package_name": "com.example.bloodbond_app"
+          "package_name": "com.example.bb_auth"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "751364244973-60m2oi0ro1fh3l6khgsjui7kt6mc1vda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bb_auth",
+            "certificate_hash": "c6376fecc9cc4db0fac169feb4716deaafb550f3"
+          }
+        },
+        {
+          "client_id": "751364244973-cfogj8n4au5dobfcnj3gvjreotjm0cq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBtWH8Xhkj6cXKzpICQM638jjgqss9ukEM"
+          "current_key": "AIzaSyAkp8-uBldaVJxHaCrXeeMLCo6Yay599jo"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751364244973-cfogj8n4au5dobfcnj3gvjreotjm0cq1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "751364244973-14tulnafubrucu4p98s49a6r9agb90af.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bbAuth.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751364244973:android:198dad0f2411b68f3f13e4",
+        "android_client_info": {
+          "package_name": "com.example.bloodbond_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751364244973-cfogj8n4au5dobfcnj3gvjreotjm0cq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkp8-uBldaVJxHaCrXeeMLCo6Yay599jo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751364244973-cfogj8n4au5dobfcnj3gvjreotjm0cq1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "751364244973-14tulnafubrucu4p98s49a6r9agb90af.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bbAuth.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }

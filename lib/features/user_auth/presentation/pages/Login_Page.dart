@@ -1,8 +1,8 @@
 import 'package:bloodbond_app/features/user_auth/presentation/pages/homepage.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sign_in_button/sign_in_button.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -109,9 +109,11 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       _handleEmailPasswordSignin();
                     },
+
                     // minWidth: double.infinity,
                     minWidth: 100,
                     color: Color.fromARGB(198, 177, 39, 179),
+            
                     textColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius:
