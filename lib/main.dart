@@ -1,12 +1,10 @@
-import 'package:bloodbond_app/features/app/splash-screen/splash_screen.dart';
-import 'package:bloodbond_app/features/user_auth/presentation/pages/Login_Page.dart';
-import 'package:bloodbond_app/features/user_auth/presentation/pages/rootpage.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:bloodbond_app/firebase_options.dart';
+import 'package:bloodbond_app/pages/first_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'firebase_options.dart';
-
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -16,13 +14,16 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(child: const LoginPage()),
+      title: 'NourishNet',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
+        useMaterial3: true,
+      ),
+      home: RootPage(),
     );
   }
 }

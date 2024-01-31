@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -42,16 +48,6 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD5klOKtdsiaEyrJ4EkHxF1P6ZzOZkBPME',
-    appId: '1:751364244973:web:5f18284f20b176ef3f13e4',
-    messagingSenderId: '751364244973',
-    projectId: 'bbauth-9ef11',
-    authDomain: 'bbauth-9ef11.firebaseapp.com',
-    storageBucket: 'bbauth-9ef11.appspot.com',
-    measurementId: 'G-Q58MXBT7TY',
-  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAkp8-uBldaVJxHaCrXeeMLCo6Yay599jo',
@@ -70,16 +66,5 @@ class DefaultFirebaseOptions {
     androidClientId: '751364244973-60m2oi0ro1fh3l6khgsjui7kt6mc1vda.apps.googleusercontent.com',
     iosClientId: '751364244973-ean4fevratukrbsnvfidc8f0vbhiukpv.apps.googleusercontent.com',
     iosBundleId: 'com.example.bloodbondApp',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDqKR619gmJb37c9weXDF1CXAsRhTj1n7k',
-    appId: '1:751364244973:ios:820b0639b22c025e3f13e4',
-    messagingSenderId: '751364244973',
-    projectId: 'bbauth-9ef11',
-    storageBucket: 'bbauth-9ef11.appspot.com',
-    androidClientId: '751364244973-60m2oi0ro1fh3l6khgsjui7kt6mc1vda.apps.googleusercontent.com',
-    iosClientId: '751364244973-tua6mrmvsu873gl6qijl52odkm8t0dmn.apps.googleusercontent.com',
-    iosBundleId: 'com.example.bloodbondApp.RunnerTests',
   );
 }
