@@ -58,6 +58,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "751364244973-tshl5vh8getuqpi0og0af4u2l2fjk07n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bloodbond_app",
+            "certificate_hash": "c6376fecc9cc4db0fac169feb4716deaafb550f3"
+          }
+        },
+        {
           "client_id": "751364244973-cfogj8n4au5dobfcnj3gvjreotjm0cq1.apps.googleusercontent.com",
           "client_type": 3
         }

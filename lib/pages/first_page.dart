@@ -1,9 +1,28 @@
+import 'package:bloodbond_app/pages/home_page.dart';
 import 'package:bloodbond_app/pages/sign_in.dart';
 import 'package:bloodbond_app/pages/sign_up.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class RootPage extends StatelessWidget {
-  const RootPage({Key? key}) : super(key: key);
+class RootPage extends StatefulWidget {
+  const RootPage({super.key});
+
+  @override
+  State<RootPage> createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+  @override
+  void initState() {
+    super.initState();
+    _auth.authStateChanges().listen((event) {
+      setState(() {
+        _user = event;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +58,9 @@ class RootPage extends StatelessWidget {
               height: 30,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                _handleGoogleSignIn();
+              },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 decoration: BoxDecoration(
@@ -62,7 +83,7 @@ class RootPage extends StatelessWidget {
   Widget _buildSignInButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => SignIn(),
@@ -87,7 +108,7 @@ class RootPage extends StatelessWidget {
   Widget _buildSignUpButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => SignUp(),
@@ -107,5 +128,20 @@ class RootPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleGoogleSignIn() {
+    try {
+      GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
+      _auth.signInWithProvider(_googleAuthProvider);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } catch (error) {
+      print(error);
+    }
   }
 }

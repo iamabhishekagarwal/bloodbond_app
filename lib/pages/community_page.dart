@@ -1,22 +1,21 @@
-import 'package:bloodbond_app/pages/community_page.dart';
+import 'package:flutter/material.dart';
+import 'package:bloodbond_app/pages/home_page.dart';
 import 'package:bloodbond_app/pages/location_page.dart';
 import 'package:bloodbond_app/pages/profile_page.dart';
-import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class CommunityPage extends StatefulWidget {
+  const CommunityPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<CommunityPage> createState() => _CommunityPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int currentPage = 0;
+class _CommunityPageState extends State<CommunityPage> {
+  int currentPage = 2;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 236),
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 198, 168, 105),
         title: Text(
@@ -28,6 +27,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      backgroundColor: Color.fromARGB(255, 255, 255, 236),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Color.fromARGB(255, 198, 168, 105),
         destinations: const [
@@ -40,19 +40,19 @@ class _HomePageState extends State<HomePage> {
         ],
         onDestinationSelected: (int index) {
           switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ),
+              );
+              break;
             case 1:
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => LocationPage(),
-                ),
-              );
-              break;
-            case 2:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CommunityPage(),
                 ),
               );
               break;

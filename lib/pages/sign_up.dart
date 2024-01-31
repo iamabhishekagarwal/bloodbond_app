@@ -39,7 +39,7 @@ class _SignUpState extends State<SignUp> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     labelText: "Email",
-                    hintText: 'Bloodbond@example.com',
+                    hintText: 'Enter your Email',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
                   ),
