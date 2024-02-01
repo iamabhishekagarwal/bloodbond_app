@@ -1,6 +1,24 @@
-import 'package:bloodbond_app/features/user_auth/presentation/pages/homepage.dart';
+import 'package:bloodbond_app/features/user_auth/presentation/pages/map_page.dart';
+import 'package:bloodbond_app/features/user_auth/presentation/pages/profile_page.dart';
 import 'package:bloodbond_app/notification_service.dart';
 import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const RootPage(),
+      theme: ThemeData(primarySwatch: Colors.green),
+    );
+  }
+}
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
@@ -30,7 +48,7 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("BloodBond"),
+        title: const Text("Nourished"),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.menu),
@@ -40,21 +58,38 @@ class _RootPageState extends State<RootPage> {
           IconButton(
             icon: const Icon(Icons.person), // Add your action icon here
             onPressed: () {
-              // Do something when the action icon is pressed
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const Editprofile();
+                  },
+                ),
+              );
             },
           ),
         ],
       ),
-      body: Homepage(),
+      // body: const Homepage(),
       bottomNavigationBar: NavigationBar(
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: "home"),
-          NavigationDestination(icon: Icon(Icons.person), label: "person"),
-          NavigationDestination(icon: Icon(Icons.graphic_eq), label: "stats")
+          NavigationDestination(
+            icon: Icon(Icons.location_on_outlined),
+            label: "location",
+          ),
+          NavigationDestination(icon: Icon(Icons.groups), label: "community"),
+          NavigationDestination(
+              icon: Icon(Icons.person_2_outlined), label: "profile")
         ],
         onDestinationSelected: (int index) {
           setState(() {
             currentPage = index;
+            if (index == 1) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => MapPage()),
+                  (route) => false);
+            }
           });
         },
         selectedIndex: currentPage,
