@@ -2,6 +2,8 @@ import 'package:bloodbond_app/features/community/screens/community_page.dart';
 import 'package:bloodbond_app/features/maps/screens/location_page.dart';
 import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:bloodbond_app/notification_service.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +14,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPage = 0;
+
+  NotificationServices notificationServices = NotificationServices();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationServices.requestNotificationPermission();
+    notificationServices.foregroundMessage();
+    notificationServices.firebaseInit(context);
+    notificationServices.isRefreshToken();
+    notificationServices.getDeviceToken().then((value) {
+      print("Device Token $value");
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
