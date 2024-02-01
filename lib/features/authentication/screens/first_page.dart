@@ -1,6 +1,6 @@
-import 'package:bloodbond_app/pages/home_page.dart';
-import 'package:bloodbond_app/pages/sign_in.dart';
-import 'package:bloodbond_app/pages/sign_up.dart';
+import 'package:bloodbond_app/features/home/screens/home_page.dart';
+import 'package:bloodbond_app/features/authentication/screens/sign_in.dart';
+import 'package:bloodbond_app/features/authentication/screens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -13,6 +13,7 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // ignore: unused_field
   User? _user;
   @override
   void initState() {

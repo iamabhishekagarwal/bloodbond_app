@@ -1,4 +1,7 @@
+import 'package:bloodbond_app/features/authentication/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:bloodbond_app/features/authentication/controllers/signup_controller.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -8,34 +11,34 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-  final TextEditingController _fullNameController = TextEditingController();
+  final SignupController controller = Get.put(SignupController());
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 255, 236),
-        appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 198, 168, 105),
-          title: Text(
-            'Sign Up',
-            style: TextStyle(
-              fontSize: 35,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
+      backgroundColor: Color.fromARGB(255, 255, 255, 236),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 198, 168, 105),
+        title: Text(
+          'Sign Up',
+          style: TextStyle(
+            fontSize: 35,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey, // Connect the GlobalKey to the Form
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextFormField(
-                  controller: _emailController,
+                  controller: controller.email,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     labelText: "Email",
@@ -50,7 +53,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: _passwordController,
+                  controller: controller.password,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: const InputDecoration(
                     labelText: "Password",
@@ -65,11 +68,11 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: _confirmPasswordController,
-                  keyboardType: TextInputType.visiblePassword,
+                  controller: controller.phoneNo,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    labelText: "Confirm Password",
-                    hintText: 'Confirm password',
+                    labelText: "Phone Number",
+                    hintText: 'Phone Number',
                     prefixIcon: Icon(Icons.password),
                     border: OutlineInputBorder(),
                   ),
@@ -80,7 +83,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: _fullNameController,
+                  controller: controller.fullName,
                   decoration: const InputDecoration(
                     labelText: "Full Name",
                     hintText: 'Enter your full name',
@@ -96,78 +99,25 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 20),
                 MaterialButton(
-                  onPressed: _signUp,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      final user = UserModel(
+                          fullName: controller.fullName.text.trim(),
+                          email: controller.email.text.trim(),
+                          phoneNo: controller.phoneNo.text.trim(),
+                          password: controller.password.text.trim());
+                      SignupController.instance.createUser(user);
+                    }
+                  },
                   minWidth: double.infinity,
-                  color:const Color.fromARGB(255, 89, 126, 82),
+                  color: const Color.fromARGB(255, 89, 126, 82),
                   textColor: Colors.white,
                   child: const Text("Sign Up"),
                 ),
               ],
             ),
           ),
-        ));
-  }
-
-  void _signUp() {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String confirmPassword = _confirmPasswordController.text;
-    String fullName = _fullNameController.text;
-
-    if (email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty ||
-        fullName.isEmpty) {
-      _showErrorDialog('All fields are required');
-      return;
-    }
-
-    if (password != confirmPassword) {
-      _showErrorDialog('Passwords do not match');
-      return;
-    }
-
-    print('Email: $email');
-    print('Password: $password');
-    print('Confirm Password: $confirmPassword');
-    print('Full Name: $fullName');
-
-    _emailController.clear();
-    _passwordController.clear();
-    _confirmPasswordController.clear();
-    _fullNameController.clear();
-
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Success'),
-        content: Text('Sign up successful!'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('OK'),
-          ),
-        ],
+        ),
       ),
     );
   }

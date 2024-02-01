@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:bloodbond_app/pages/home_page.dart';
-import 'package:bloodbond_app/pages/location_page.dart';
-import 'package:bloodbond_app/pages/profile_page.dart';
+import 'package:bloodbond_app/features/home/screens/home_page.dart';
+import 'package:bloodbond_app/features/maps/screens/location_page.dart';
+import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});

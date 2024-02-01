@@ -1,21 +1,22 @@
-import 'package:bloodbond_app/pages/community_page.dart';
-import 'package:bloodbond_app/pages/home_page.dart';
-import 'package:bloodbond_app/pages/profile_page.dart';
+import 'package:bloodbond_app/features/community/screens/community_page.dart';
+import 'package:bloodbond_app/features/maps/screens/location_page.dart';
+import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 
-class LocationPage extends StatefulWidget {
-  const LocationPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<LocationPage> createState() => _LocationPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _LocationPageState extends State<LocationPage> {
-  int currentPage = 1;
+class _HomePageState extends State<HomePage> {
+  int currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 236),
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 198, 168, 105),
         title: Text(
@@ -27,7 +28,6 @@ class _LocationPageState extends State<LocationPage> {
           ),
         ),
       ),
-      backgroundColor: Color.fromARGB(255, 255, 255, 236),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Color.fromARGB(255, 198, 168, 105),
         destinations: const [
@@ -40,11 +40,11 @@ class _LocationPageState extends State<LocationPage> {
         ],
         onDestinationSelected: (int index) {
           switch (index) {
-            case 0:
+            case 1:
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HomePage(),
+                  builder: (context) => LocationPage(),
                 ),
               );
               break;

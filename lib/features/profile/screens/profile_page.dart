@@ -1,6 +1,7 @@
-import 'package:bloodbond_app/pages/community_page.dart';
-import 'package:bloodbond_app/pages/home_page.dart';
-import 'package:bloodbond_app/pages/location_page.dart';
+import 'package:bloodbond_app/features/community/screens/community_page.dart';
+import 'package:bloodbond_app/features/home/screens/home_page.dart';
+import 'package:bloodbond_app/features/maps/screens/location_page.dart';
+import 'package:bloodbond_app/repository/Authentication_Repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -167,25 +168,33 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: const Text(
                       "Cancel",
                       style: TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 2.2,
-                          color: Colors.black,
-                          ),    
+                        fontSize: 14,
+                        letterSpacing: 2.2,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),  
+                  ),
                   OutlinedButton(
-                    
                     onPressed: () {},
                     child: const Text(
                       "Save",
                       style: TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 2.2,
-                          color: Colors.black,
-                          ),    
+                        fontSize: 14,
+                        letterSpacing: 2.2,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  AuthenticationRepository.instance.logout();
+                },
+                child: const Text(
+                  "Logout",
+                ),
               )
             ],
           ),
