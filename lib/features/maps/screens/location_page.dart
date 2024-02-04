@@ -9,38 +9,37 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationPage extends StatefulWidget {
-  const LocationPage({super.key});
+  final double initialLatitude;
+  final double initialLongitude;
+
+  const LocationPage({
+    required this.initialLatitude,
+    required this.initialLongitude,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LocationPage> createState() => LocationPageState();
 }
 
 class LocationPageState extends State<LocationPage> {
-  Location _locationController = new Location();
+  Location _locationController = Location();
+  StreamSubscription<LocationData>? _locationSubscription;
 
   final Completer<GoogleMapController> _mapController =
       Completer<GoogleMapController>();
 
-  static const LatLng _pGooglePlex = LatLng(37.4223, -122.0848);
-  static const LatLng _pApplePark = LatLng(37.3346, -122.0090);
-  double? Latitude;
-  double? Longitude;
+  late LatLng _initialPosition;
 
-  Map<PolylineId, Polyline> polylines = {};
-  LatLng? _currentP = null;
-
-  int currentPage = 1;
   @override
   void initState() {
     super.initState();
-    getLocationUpdates();
-    // .then(
-    //   (_) => {
-    //     getPolylinePoints().then((coordinates) => {
-    //           print(coordinates),
-    //         }),
-    //   },
-    // );
+    _initialPosition =
+        LatLng(widget.initialLatitude, widget.initialLongitude);
+    _cameraToPosition(_initialPosition);
+    if (mounted) {
+      getLocationUpdates();
+    }
   }
 
   @override
@@ -58,29 +57,18 @@ class LocationPageState extends State<LocationPage> {
         ),
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 236),
-      body: _currentP == null
-          ? Center(
-              child: Text("Loading..."),
-            )
-          : GoogleMap(
-              onMapCreated: ((GoogleMapController controller) =>
-                  _mapController.complete(controller)),
-              initialCameraPosition:
-                  CameraPosition(target: _pGooglePlex, zoom: 13),
-              markers: {
-                Marker(
-                    markerId: MarkerId("_currentLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: _currentP!),
-                if (Latitude != null)
-                  Marker(
-                    markerId: MarkerId("_destinationLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: LatLng(Latitude!, Longitude!),
-                  ),
-              },
-              polylines: Set<Polyline>.of(polylines.values),
-            ),
+      body: GoogleMap(
+        onMapCreated: ((GoogleMapController controller) =>
+            _mapController.complete(controller)),
+        initialCameraPosition: CameraPosition(target: _initialPosition, zoom: 13),
+        markers: {
+          Marker(
+            markerId: MarkerId("_currentLocation"),
+            icon: BitmapDescriptor.defaultMarker,
+            position: _initialPosition,
+          ),
+        },
+      ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Color.fromARGB(255, 198, 168, 105),
         destinations: const [
@@ -119,7 +107,7 @@ class LocationPageState extends State<LocationPage> {
               break;
           }
         },
-        selectedIndex: currentPage,
+        selectedIndex: 1,
       ),
     );
   }
@@ -153,28 +141,30 @@ class LocationPageState extends State<LocationPage> {
       if (currentLocation.latitude != null &&
           currentLocation.longitude != null) {
         setState(() {
-          _currentP =
+          _initialPosition =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          _cameraToPosition(_currentP!);
+          _cameraToPosition(_initialPosition);
         });
       }
     });
+    _locationSubscription = _locationController.onLocationChanged.listen(
+      (LocationData currentLocation) {
+        if (currentLocation.latitude != null &&
+            currentLocation.longitude != null) {
+          setState(() {
+            _initialPosition =
+                LatLng(currentLocation.latitude!, currentLocation.longitude!);
+            _cameraToPosition(_initialPosition);
+          });
+        }
+      },
+    );
   }
 
-  void LocationMark(String name) async {
-    try {
-      // Use geocoding to get the location coordinates by searching for the name
-      List<geo.Location> locations = await geo.locationFromAddress(name);
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
 
-      if (locations.isNotEmpty) {
-        geo.Location location = locations.first;
-        Latitude = location.latitude;
-        Longitude = location.longitude;
-      } else {
-        print('Location not found for $name');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
+    super.dispose();
   }
 }

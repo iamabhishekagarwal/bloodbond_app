@@ -225,7 +225,10 @@ class _ProfilePageState extends State<ProfilePage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LocationPage(),
+                  builder: (context) => LocationPage(
+      initialLatitude: 37.4223,
+      initialLongitude: -122.0848,
+    ),
                 ),
               );
               break;
