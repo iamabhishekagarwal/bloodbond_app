@@ -1,6 +1,7 @@
 import 'package:bloodbond_app/features/community/screens/community_page.dart';
 import 'package:bloodbond_app/features/maps/screens/location_page.dart';
 import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
+import 'package:bloodbond_app/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -56,7 +57,7 @@ class HomePageState extends State<HomePage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LocationPage(locationPageState),
+                  builder: (context) => LocationPage(initialLatitude: ,),
                 ),
               );
               break;
