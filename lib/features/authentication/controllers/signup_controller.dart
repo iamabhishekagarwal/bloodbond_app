@@ -11,7 +11,7 @@ class SignupController extends GetxController {
   final fullName = TextEditingController();
   final phoneNo = TextEditingController();
   final userRepo = Get.put(UserRepository());
-  void signup (String email, String password) {
+  void signup(String email, String password) {
     String? error = AuthenticationRepository.instance
         .createUserWithEmailAndPassword(email, password) as String?;
     if (error != null) {
@@ -25,5 +25,6 @@ class SignupController extends GetxController {
 
   Future<void> createUser(UserModel user) async {
     await userRepo.createUser(user);
+    signup(user.email, user.password);
   }
 }
