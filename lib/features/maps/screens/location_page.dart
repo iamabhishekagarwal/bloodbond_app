@@ -9,37 +9,39 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationPage extends StatefulWidget {
-  final double initialLatitude;
-  final double initialLongitude;
-
-  const LocationPage({
-    required this.initialLatitude,
-    required this.initialLongitude,
-    Key? key,
-  }) : super(key: key);
+  const LocationPage({super.key});
 
   @override
   State<LocationPage> createState() => LocationPageState();
 }
 
 class LocationPageState extends State<LocationPage> {
-  Location _locationController = Location();
-  StreamSubscription<LocationData>? _locationSubscription;
+  Location _locationController = new Location();
 
   final Completer<GoogleMapController> _mapController =
       Completer<GoogleMapController>();
 
-  late LatLng _initialPosition;
+  static const LatLng _pGooglePlex = LatLng(37.4223, -122.0848);
+  static const LatLng _pApplePark = LatLng(37.3346, -122.0090);
+  Set<Marker> markers = {};
+  double? Latitude;
+  double? Longitude;
 
+  Map<PolylineId, Polyline> polylines = {};
+  LatLng? _currentP = null;
+
+  int currentPage = 1;
   @override
   void initState() {
     super.initState();
-    _initialPosition =
-        LatLng(widget.initialLatitude, widget.initialLongitude);
-    _cameraToPosition(_initialPosition);
-    if (mounted) {
-      getLocationUpdates();
-    }
+    getLocationUpdates();
+    // .then(
+    //   (_) => {
+    //     getPolylinePoints().then((coordinates) => {
+    //           print(coordinates),
+    //         }),
+    //   },
+    // );
   }
 
   @override
@@ -57,18 +59,18 @@ class LocationPageState extends State<LocationPage> {
         ),
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 236),
-      body: GoogleMap(
-        onMapCreated: ((GoogleMapController controller) =>
-            _mapController.complete(controller)),
-        initialCameraPosition: CameraPosition(target: _initialPosition, zoom: 13),
-        markers: {
-          Marker(
-            markerId: MarkerId("_currentLocation"),
-            icon: BitmapDescriptor.defaultMarker,
-            position: _initialPosition,
-          ),
-        },
-      ),
+      body: _currentP == null
+          ? Center(
+              child: Text("Loading..."),
+            )
+          : GoogleMap(
+              onMapCreated: ((GoogleMapController controller) =>
+                  _mapController.complete(controller)),
+              initialCameraPosition:
+                  CameraPosition(target: _pGooglePlex, zoom: 13),
+              markers: Set<Marker>.of(markers),
+              polylines: Set<Polyline>.of(polylines.values),
+            ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Color.fromARGB(255, 198, 168, 105),
         destinations: const [
@@ -107,7 +109,7 @@ class LocationPageState extends State<LocationPage> {
               break;
           }
         },
-        selectedIndex: 1,
+        selectedIndex: currentPage,
       ),
     );
   }
@@ -141,30 +143,42 @@ class LocationPageState extends State<LocationPage> {
       if (currentLocation.latitude != null &&
           currentLocation.longitude != null) {
         setState(() {
-          _initialPosition =
+          _currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          _cameraToPosition(_initialPosition);
+          _cameraToPosition(_currentP!);
         });
       }
     });
-    _locationSubscription = _locationController.onLocationChanged.listen(
-      (LocationData currentLocation) {
-        if (currentLocation.latitude != null &&
-            currentLocation.longitude != null) {
-          setState(() {
-            _initialPosition =
-                LatLng(currentLocation.latitude!, currentLocation.longitude!);
-            _cameraToPosition(_initialPosition);
-          });
-        }
-      },
-    );
+  }
+
+  void LocationMark(String name) async {
+    try {
+      // Use geocoding to get the location coordinates by searching for the name
+      List<geo.Location> locations = await geo.locationFromAddress(name);
+      print("Randi");
+      if (locations.isNotEmpty) {
+        geo.Location location = locations.first;
+        print(LatLng(location.latitude, location.longitude));
+        Marker newMarker = Marker(
+          markerId: MarkerId("_newLocation"),
+          icon: BitmapDescriptor.defaultMarker,
+          position: LatLng(location.latitude, location.longitude),
+        );
+        setState(() {
+          print("Abhishek");
+          _currentP = LatLng(location.latitude, location.longitude);
+          markers.add(newMarker);
+        });
+      } else {
+        print('Location not found for $name');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   @override
   void dispose() {
-    _locationSubscription?.cancel();
-
     super.dispose();
   }
 }
