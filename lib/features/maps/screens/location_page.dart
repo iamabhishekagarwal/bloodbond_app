@@ -4,6 +4,7 @@ import 'package:bloodbond_app/features/community/screens/community_page.dart';
 import 'package:bloodbond_app/features/home/screens/home_page.dart';
 import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -11,10 +12,10 @@ class LocationPage extends StatefulWidget {
   const LocationPage({super.key});
 
   @override
-  State<LocationPage> createState() => _LocationPageState();
+  State<LocationPage> createState() => LocationPageState();
 }
 
-class _LocationPageState extends State<LocationPage> {
+class LocationPageState extends State<LocationPage> {
   Location _locationController = new Location();
 
   final Completer<GoogleMapController> _mapController =
@@ -22,6 +23,8 @@ class _LocationPageState extends State<LocationPage> {
 
   static const LatLng _pGooglePlex = LatLng(37.4223, -122.0848);
   static const LatLng _pApplePark = LatLng(37.3346, -122.0090);
+  double? Latitude;
+  double? Longitude;
 
   Map<PolylineId, Polyline> polylines = {};
   LatLng? _currentP = null;
@@ -69,14 +72,12 @@ class _LocationPageState extends State<LocationPage> {
                     markerId: MarkerId("_currentLocation"),
                     icon: BitmapDescriptor.defaultMarker,
                     position: _currentP!),
-                Marker(
-                    markerId: MarkerId("_sourceLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: _pGooglePlex),
-                Marker(
+                if (Latitude != null)
+                  Marker(
                     markerId: MarkerId("_destinationLocation"),
                     icon: BitmapDescriptor.defaultMarker,
-                    position: _pApplePark),
+                    position: LatLng(Latitude!, Longitude!),
+                  ),
               },
               polylines: Set<Polyline>.of(polylines.values),
             ),
@@ -158,5 +159,22 @@ class _LocationPageState extends State<LocationPage> {
         });
       }
     });
+  }
+
+  void LocationMark(String name) async {
+    try {
+      // Use geocoding to get the location coordinates by searching for the name
+      List<geo.Location> locations = await geo.locationFromAddress(name);
+
+      if (locations.isNotEmpty) {
+        geo.Location location = locations.first;
+        Latitude = location.latitude;
+        Longitude = location.longitude;
+      } else {
+        print('Location not found for $name');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }
