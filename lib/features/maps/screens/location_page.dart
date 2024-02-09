@@ -9,8 +9,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationPage extends StatefulWidget {
-  const LocationPage({super.key});
-
+  final String? name;
+  const LocationPage({Key? key, this.name}) : super(key: key);
   @override
   State<LocationPage> createState() => LocationPageState();
 }
@@ -35,6 +35,9 @@ class LocationPageState extends State<LocationPage> {
   void initState() {
     super.initState();
     getLocationUpdates();
+    if (widget.name != null) {
+      LocationMark(widget.name!);
+    }
     // .then(
     //   (_) => {
     //     getPolylinePoints().then((coordinates) => {
@@ -142,7 +145,15 @@ class LocationPageState extends State<LocationPage> {
         .listen((LocationData currentLocation) {
       if (currentLocation.latitude != null &&
           currentLocation.longitude != null) {
+        Marker newMarker1 = Marker(
+          markerId: MarkerId("_userLocation"),
+          icon: BitmapDescriptor.defaultMarker,
+          position:
+              LatLng(currentLocation.latitude!, currentLocation.longitude!),
+        );
         setState(() {
+          markers.add(newMarker1);
+
           _currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
           _cameraToPosition(_currentP!);
@@ -151,10 +162,10 @@ class LocationPageState extends State<LocationPage> {
     });
   }
 
-  void LocationMark(String name) async {
+  void LocationMark(String name1) async {
     try {
       // Use geocoding to get the location coordinates by searching for the name
-      List<geo.Location> locations = await geo.locationFromAddress(name);
+      List<geo.Location> locations = await geo.locationFromAddress(name1);
       print("Randi");
       if (locations.isNotEmpty) {
         geo.Location location = locations.first;
@@ -170,7 +181,7 @@ class LocationPageState extends State<LocationPage> {
           markers.add(newMarker);
         });
       } else {
-        print('Location not found for $name');
+        print('Location not found for $name1');
       }
     } catch (e) {
       print('Error: $e');

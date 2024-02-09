@@ -136,9 +136,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
-        child: CustomCard(name:"apple park",state:"bc",distance: 13.0,)
-      ),
+          padding: EdgeInsets.all(16),
+          child: CustomCard(
+            name: "Taj Mahal",
+            state: "bc",
+            distance: 13.0,
+          )),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Color.fromARGB(255, 198, 168, 105),
         destinations: const [
