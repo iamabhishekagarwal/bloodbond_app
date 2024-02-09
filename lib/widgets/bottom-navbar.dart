@@ -1,30 +1,52 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-// class BottomNavigationBarWidget extends StatelessWidget {
-//   final int currentPage;
-//   final ValueChanged<int> onDestinationSelected;
+class CustomBottomNavigationBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onTap;
 
-//   const BottomNavigationBarWidget({
-//     Key? key,
-//     required this.currentPage,
-//     required this.onDestinationSelected,
-//   }) : super(key: key);
+  const CustomBottomNavigationBar({
+    Key? key,
+    required this.currentIndex,
+    required this.onTap,
+  }) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return NavigationBar(
-//         destinations: const [
-//           NavigationDestination(icon: Icon(Icons.home), label: "home"),
-//           NavigationDestination(icon: Icon(Icons.location_on_outlined), label: "location"),
-//           NavigationDestination(icon: Icon(Icons.groups), label: "community"),
-//           NavigationDestination(icon: Icon(Icons.person_2_outlined), label: "profile")
-//         ],
-//         onDestinationSelected: (int index) {
-//           setState(() {
-//             currentPage = index;
-//           });
-//         },
-//         selectedIndex: currentPage,
-//       ),
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: Color.fromARGB(255, 198, 168, 105),
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.location_on_outlined), label: "location"),
+        BottomNavigationBarItem(icon: Icon(Icons.groups), label: "community"),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile'),
+      ],
+      currentIndex: currentIndex,
+      onTap: (index) {
+        onTap(index);
+        switch (index) {
+          case 0:
+            if (currentIndex != 0) {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+            break;
+          case 1:
+            if (currentIndex != 1) {
+              Navigator.pushReplacementNamed(context, '/location');
+            }
+            break;
+          case 2:
+            if (currentIndex != 2) {
+              Navigator.pushReplacementNamed(context, '/community');
+            }
+            break;
+          case 3:
+            if (currentIndex != 3) {
+              Navigator.pushReplacementNamed(context, '/profile');
+            }
+            break;
+        }
+      },
+    );
+  }
+}

@@ -1,9 +1,8 @@
-import 'package:bloodbond_app/features/community/screens/community_page.dart';
-import 'package:bloodbond_app/features/maps/screens/location_page.dart';
-import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
+import 'package:bloodbond_app/features/home/controllers/fetch_dontaions.dart';
+import 'package:bloodbond_app/features/home/model/donation_model.dart';
+import 'package:bloodbond_app/widgets/bottom-navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:bloodbond_app/notification_service.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPage = 0;
-
+  List<DonationModel> donations = [];
   NotificationServices notificationServices = NotificationServices();
 
   @override
@@ -27,8 +26,20 @@ class _HomePageState extends State<HomePage> {
     notificationServices.getDeviceToken().then((value) {
       print("Device Token $value");
     });
+    fetchDonations();
   }
 
+  void fetchDonations() async {
+    try {
+      var fetchedDonations = await DonationRepository.instance.fetchDonations();
+      setState(() {
+        donations = fetchedDonations;
+      });
+    } catch (error) {
+      // Handle error
+      print(error.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,45 +56,25 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: Color.fromARGB(255, 198, 168, 105),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: "home"),
-          NavigationDestination(
-              icon: Icon(Icons.location_on_outlined), label: "location"),
-          NavigationDestination(icon: Icon(Icons.groups), label: "community"),
-          NavigationDestination(
-              icon: Icon(Icons.person_2_outlined), label: "profile")
-        ],
-        onDestinationSelected: (int index) {
-          switch (index) {
-            case 1:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LocationPage(),
-                ),
-              );
-              break;
-            case 2:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CommunityPage(),
-                ),
-              );
-              break;
-            case 3:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(),
-                ),
-              );
-              break;
-          }
+      body: ListView.builder(
+        itemCount: donations.length,
+        itemBuilder: (context, index) {
+          return Card(
+            child: ListTile(
+              title: Text('Food Servings: ${donations[index].foodServings}'),
+              subtitle: Text('Timings: ${donations[index].timings}'),
+              // Add any other fields you want to display on the card
+            ),
+          );
         },
-        selectedIndex: currentPage,
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: currentPage,
+        onTap: (index) {
+          setState(() {
+            currentPage = index;
+          });
+        },
       ),
     );
   }
