@@ -1,50 +1,36 @@
 import 'dart:async';
 
-import 'package:bloodbond_app/features/community/screens/community_page.dart';
-import 'package:bloodbond_app/features/home/screens/home_page.dart';
-import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
+import 'package:bloodbond_app/widgets/bottom-navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationPage extends StatefulWidget {
-  final String? name;
-  const LocationPage({Key? key, this.name}) : super(key: key);
+  final String? locationName;
+  const LocationPage({Key? key, this.locationName}) : super(key: key);
+
   @override
   State<LocationPage> createState() => LocationPageState();
 }
 
 class LocationPageState extends State<LocationPage> {
-  Location _locationController = new Location();
-
-  final Completer<GoogleMapController> _mapController =
+  int currentPage = 2;
+  Location _location = Location();
+  Completer<GoogleMapController> _mapController =
       Completer<GoogleMapController>();
 
-  static const LatLng _pGooglePlex = LatLng(37.4223, -122.0848);
-  static const LatLng _pApplePark = LatLng(37.3346, -122.0090);
-  Set<Marker> markers = {};
-  double? Latitude;
-  double? Longitude;
+  static const LatLng _defaultLocation = LatLng(37.4223, -122.0848);
+  LatLng? _currentPosition;
+  Set<Marker> _markers = {};
 
-  Map<PolylineId, Polyline> polylines = {};
-  LatLng? _currentP = null;
-
-  int currentPage = 1;
   @override
   void initState() {
     super.initState();
-    getLocationUpdates();
-    if (widget.name != null) {
-      LocationMark(widget.name!);
+    _getLocationUpdates();
+    if (widget.locationName != null) {
+      _markLocation(widget.locationName!);
     }
-    // .then(
-    //   (_) => {
-    //     getPolylinePoints().then((coordinates) => {
-    //           print(coordinates),
-    //         }),
-    //   },
-    // );
   }
 
   @override
@@ -62,126 +48,93 @@ class LocationPageState extends State<LocationPage> {
         ),
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 236),
-      body: _currentP == null
+      body: _currentPosition == null
           ? Center(
               child: Text("Loading..."),
             )
           : GoogleMap(
               onMapCreated: ((GoogleMapController controller) =>
                   _mapController.complete(controller)),
-              initialCameraPosition:
-                  CameraPosition(target: _pGooglePlex, zoom: 13),
-              markers: Set<Marker>.of(markers),
-              polylines: Set<Polyline>.of(polylines.values),
+              initialCameraPosition: CameraPosition(
+                target: _defaultLocation,
+                zoom: 13,
+              ),
+              markers: Set<Marker>.of(_markers),
             ),
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: Color.fromARGB(255, 198, 168, 105),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: "home"),
-          NavigationDestination(
-              icon: Icon(Icons.location_on_outlined), label: "location"),
-          NavigationDestination(icon: Icon(Icons.groups), label: "community"),
-          NavigationDestination(
-              icon: Icon(Icons.person_2_outlined), label: "profile")
-        ],
-        onDestinationSelected: (int index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(),
-                ),
-              );
-              break;
-            case 2:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CommunityPage(),
-                ),
-              );
-              break;
-            case 3:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(),
-                ),
-              );
-              break;
-          }
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: currentPage,
+        onTap: (index) {
+          setState(() {
+            currentPage = index;
+          });
         },
-        selectedIndex: currentPage,
       ),
     );
   }
 
-  Future<void> _cameraToPosition(LatLng pos) async {
+  Future<void> _moveCameraToPosition(LatLng position) async {
     final GoogleMapController controller = await _mapController.future;
-    CameraPosition _newCameraPosition = CameraPosition(target: pos, zoom: 13);
-    await controller
-        .animateCamera(CameraUpdate.newCameraPosition(_newCameraPosition));
+    CameraPosition newPosition = CameraPosition(target: position, zoom: 13);
+    await controller.animateCamera(CameraUpdate.newCameraPosition(newPosition));
   }
 
-  Future<void> getLocationUpdates() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+  Future<void> _getLocationUpdates() async {
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-    _serviceEnabled = await _locationController.serviceEnabled();
-    if (_serviceEnabled) {
-      _serviceEnabled = await _locationController.requestService();
-    } else {
-      return;
-    }
-    _permissionGranted = await _locationController.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await _locationController.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    serviceEnabled = await _location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await _location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
-    _locationController.onLocationChanged
-        .listen((LocationData currentLocation) {
+
+    permissionGranted = await _location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await _location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _location.onLocationChanged.listen((LocationData currentLocation) {
       if (currentLocation.latitude != null &&
           currentLocation.longitude != null) {
-        Marker newMarker1 = Marker(
+        Marker newUserLocation = Marker(
           markerId: MarkerId("_userLocation"),
           icon: BitmapDescriptor.defaultMarker,
           position:
               LatLng(currentLocation.latitude!, currentLocation.longitude!),
         );
         setState(() {
-          markers.add(newMarker1);
-
-          _currentP =
+          _markers.add(newUserLocation);
+          _currentPosition =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          _cameraToPosition(_currentP!);
+          _moveCameraToPosition(_currentPosition!);
         });
       }
     });
   }
 
-  void LocationMark(String name1) async {
+  void _markLocation(String locationName) async {
     try {
-      // Use geocoding to get the location coordinates by searching for the name
-      List<geo.Location> locations = await geo.locationFromAddress(name1);
-      print("Randi");
+      List<geo.Location> locations =
+          await geo.locationFromAddress(locationName);
       if (locations.isNotEmpty) {
         geo.Location location = locations.first;
-        print(LatLng(location.latitude, location.longitude));
-        Marker newMarker = Marker(
+        Marker newLocationMarker = Marker(
           markerId: MarkerId("_newLocation"),
           icon: BitmapDescriptor.defaultMarker,
           position: LatLng(location.latitude, location.longitude),
         );
         setState(() {
-          print("Abhishek");
-          _currentP = LatLng(location.latitude, location.longitude);
-          markers.add(newMarker);
+          _currentPosition = LatLng(location.latitude, location.longitude);
+          _moveCameraToPosition(_currentPosition!);
+          _markers.add(newLocationMarker);
         });
       } else {
-        print('Location not found for $name1');
+        print('Location not found for $locationName');
       }
     } catch (e) {
       print('Error: $e');

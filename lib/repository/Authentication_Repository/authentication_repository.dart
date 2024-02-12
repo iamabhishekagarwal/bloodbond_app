@@ -1,5 +1,5 @@
 import 'package:bloodbond_app/features/authentication/screens/first_page.dart';
-import 'package:bloodbond_app/features/community/screens/home_page.dart';
+import 'package:bloodbond_app/features/home/screens/home_page.dart';
 import 'package:bloodbond_app/repository/Authentication_Repository/exceptions/signin_email_password_failure.dart';
 import 'package:bloodbond_app/repository/Authentication_Repository/exceptions/signup_email_password_failure.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,7 +49,7 @@ class AuthenticationRepository extends GetxController {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-       final ex = SigninWithEmailAndPasswordFailure(e.code);
+      final ex = SigninWithEmailAndPasswordFailure(e.code);
       print("firebase auth exception -${ex.message}");
       throw ex;
     } catch (_) {
