@@ -1,11 +1,9 @@
+
 import 'package:bloodbond_app/features/community/screens/community_page.dart';
 import 'package:bloodbond_app/features/home/screens/home_page.dart';
 import 'package:bloodbond_app/features/maps/screens/location_page.dart';
-import 'package:bloodbond_app/features/profile/screens/profile_settings_page.dart';
 import 'package:bloodbond_app/repository/Authentication_Repository/authentication_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,23 +13,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late User? currentUser;
-  String? photoUrl;
   int currentPage = 3;
-  @override
-  void initState() {
-    super.initState();
-    final authRepo = AuthenticationRepository.instance;
-    currentUser = authRepo.firebaseUser.value;
-    authRepo.firebaseUser.listen((user) {
-      setState(() {
-        currentUser = user;
-        if (user != null) {
-          photoUrl = user.photoURL;
-        }
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,49 +28,178 @@ class _ProfilePageState extends State<ProfilePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings), // Add your action icon here
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return  Profilesetting();
-                  },
-                ),
-              );
-            },
-          ),
-        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: currentUser != null
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (photoUrl != null) // Check if photoUrl is available
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage:
-                          NetworkImage(photoUrl!), // Display profile picture
-                    ),
-                  Text(
-                    'Name: ${currentUser!.displayName ?? 'N/A'}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Email: ${currentUser!.email ?? 'N/A'}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  // Add more user details as needed
-                ],
-              )
-            : Center(
-                child: CircularProgressIndicator(),
+      body: Container(
+        padding: const EdgeInsets.only(left: 16, top: 10, right: 16),
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: ListView(
+            children: [
+              const Text(
+                "Edit Profile",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
               ),
+              const SizedBox(
+                height: 15,
+              ),
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                        boxShadow: const [
+                          BoxShadow(
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            color: Colors.black,
+                            offset: Offset(0, 10),
+                          )
+                        ],
+                        shape: BoxShape.circle,
+                        image: const DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage("#"),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                width: 4,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor),
+                            color: Colors.green),
+                        child: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(bottom: 3),
+                  labelText: "full name",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "Ex: Aditya Mishra",
+                  hintStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              const TextField(
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(bottom: 3),
+                  labelText: "Email address",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "Ex: abcd@gmail.com",
+                  hintStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              const TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(bottom: 3),
+                  labelText: "Number",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "Ex: 9976xxxxx",
+                  hintStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              const TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  suffixIcon: Icon(Icons.remove_red_eye, color: Colors.grey),
+                  contentPadding: EdgeInsets.only(bottom: 3),
+                  labelText: "Password",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "*********",
+                  hintStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 180,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(
+                        fontSize: 14,
+                        letterSpacing: 2.2,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Save",
+                      style: TextStyle(
+                        fontSize: 14,
+                        letterSpacing: 2.2,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  AuthenticationRepository.instance.logout();
+                },
+                child: const Text(
+                  "Logout",
+                ),
+              )
+            ],
+          ),
+        ),
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 236),
       bottomNavigationBar: NavigationBar(
@@ -134,3 +245,5 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+  
