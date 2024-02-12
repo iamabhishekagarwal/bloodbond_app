@@ -54,7 +54,7 @@ class CustomCard extends StatelessWidget {
                   onTap: () {
                     print("Maha Randi");
                     Get.to(() => LocationPage(
-                          name: "$name",
+                          locationName: "$name",
                         ));
                   },
                   child: Text(
