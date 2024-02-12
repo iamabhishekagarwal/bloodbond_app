@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloodbond_app/features/community/screens/community_page.dart';
 import 'package:bloodbond_app/features/home/screens/home_page.dart';
 import 'package:bloodbond_app/features/profile/screens/profile_page.dart';
-import 'package:bloodbond_app/widgets/bottom-navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -72,30 +71,49 @@ class LocationPageState extends State<LocationPage> {
                   _mapController.complete(controller)),
               initialCameraPosition:
                   CameraPosition(target: _pGooglePlex, zoom: 13),
-              markers: {
-                Marker(
-                    markerId: MarkerId("_currentLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: _currentP!),
-                Marker(
-                    markerId: MarkerId("_sourceLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: _pGooglePlex),
-                Marker(
-                    markerId: MarkerId("_destinationLocation"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: _pApplePark),
-              },
+              markers: Set<Marker>.of(markers),
               polylines: Set<Polyline>.of(polylines.values),
             ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-          currentIndex: currentPage,
-          onTap: (index) {
-            setState(() {
-              currentPage = index;
-            });
-          },
-        )
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: Color.fromARGB(255, 198, 168, 105),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: "home"),
+          NavigationDestination(
+              icon: Icon(Icons.location_on_outlined), label: "location"),
+          NavigationDestination(icon: Icon(Icons.groups), label: "community"),
+          NavigationDestination(
+              icon: Icon(Icons.person_2_outlined), label: "profile")
+        ],
+        onDestinationSelected: (int index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ),
+              );
+              break;
+            case 2:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CommunityPage(),
+                ),
+              );
+              break;
+            case 3:
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(),
+                ),
+              );
+              break;
+          }
+        },
+        selectedIndex: currentPage,
+      ),
     );
   }
 
@@ -160,6 +178,7 @@ class LocationPageState extends State<LocationPage> {
         setState(() {
           print("Abhishek");
           _currentP = LatLng(location.latitude, location.longitude);
+          _cameraToPosition(_currentP!);
           markers.add(newMarker);
         });
       } else {

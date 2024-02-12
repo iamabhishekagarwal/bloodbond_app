@@ -1,6 +1,7 @@
 import 'package:bloodbond_app/features/home/controllers/fetch_dontaions.dart';
 import 'package:bloodbond_app/features/home/model/donation_model.dart';
 import 'package:bloodbond_app/widgets/bottom-navbar.dart';
+import 'package:bloodbond_app/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:bloodbond_app/notification_service.dart';
 
@@ -56,18 +57,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: donations.length,
-        itemBuilder: (context, index) {
-          return Card(
-            child: ListTile(
-              title: Text('Food Servings: ${donations[index].foodServings}'),
-              subtitle: Text('Timings: ${donations[index].timings}'),
-              // Add any other fields you want to display on the card
-            ),
-          );
-        },
-      ),
+      body: Padding(
+          padding: EdgeInsets.all(16),
+          child: CustomCard(
+            name: "Taj Mahal",
+            state: "bc",
+            distance: 13.0,
+          )),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: currentPage,
         onTap: (index) {
