@@ -1,4 +1,3 @@
-import 'package:bloodbond_app/features/home/model/donation_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,13 +5,9 @@ import 'package:get/get.dart';
 class DonationRepository extends GetxController {
   static DonationRepository get instance => Get.find();
   final _db = FirebaseFirestore.instance;
-
-  Future<List<DonationModel>> fetchDonations() async {
+  fetchDonations() async {
     try {
-      var querySnapshot = await _db.collection('Donations').get();
-      return querySnapshot.docs
-          .map((doc) => DonationModel.fromSnapshot(doc))
-          .toList();
+      await _db.collection('Donations').get().then((value) => null);
     } catch (error) {
       Get.snackbar(
         "Error",
@@ -22,7 +17,7 @@ class DonationRepository extends GetxController {
         colorText: Colors.red,
       );
       print(error.toString());
-      throw error;
+      return null;
     }
   }
 }
