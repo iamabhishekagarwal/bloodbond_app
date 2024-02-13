@@ -1,9 +1,9 @@
 import 'package:bloodbond_app/features/home/controllers/fetch_dontaions.dart';
 import 'package:bloodbond_app/features/home/model/donation_model.dart';
+import 'package:bloodbond_app/notification_service.dart';
 import 'package:bloodbond_app/widgets/bottom-navbar.dart';
 import 'package:bloodbond_app/widgets/custom_card.dart';
 import 'package:flutter/material.dart';
-import 'package:bloodbond_app/notification_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
           padding: EdgeInsets.all(16),
           child: CustomCard(
-            name: "Taj Mahal",
+            name: "Bangalore Airport",
             state: "bc",
             distance: 13.0,
           )),

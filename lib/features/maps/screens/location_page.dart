@@ -26,6 +26,8 @@ class LocationPageState extends State<LocationPage> {
   LatLng? _destinationPosition;
   Set<Marker> _markers = {};
 
+  Map<PolylineId, Polyline> polylines = {};
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +61,7 @@ class LocationPageState extends State<LocationPage> {
                 zoom: 13,
               ),
               markers: Set<Marker>.of(_markers),
+              polylines: Set<Polyline>.of(polylines.values),
             ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: currentPage,
@@ -141,7 +144,7 @@ class LocationPageState extends State<LocationPage> {
       print('Error: $e');
     }
     getPolylinePoints().then((coordinates) => {
-          print(coordinates),
+          generatePolylineFromPoints(coordinates),
         });
   }
 
@@ -166,6 +169,17 @@ class LocationPageState extends State<LocationPage> {
     return polylineCoordinates;
   }
 
+  void generatePolylineFromPoints(List<LatLng> polylineCoordinates) async {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+        polylineId: id,
+        color: Colors.black,
+        points: polylineCoordinates,
+        width: 8);
+    setState(() {
+      polylines[id] = polyline;
+    });
+  }
   // @override
   // void dispose() {
   //   super.dispose();
