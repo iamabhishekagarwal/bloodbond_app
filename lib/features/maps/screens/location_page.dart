@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:bloodbond_app/const.dart';
 import 'package:bloodbond_app/widgets/bottom-navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -15,22 +17,19 @@ class LocationPage extends StatefulWidget {
 }
 
 class LocationPageState extends State<LocationPage> {
-  int currentPage = 2;
+  int currentPage = 1;
   Location _location = Location();
   Completer<GoogleMapController> _mapController =
       Completer<GoogleMapController>();
 
-  static const LatLng _defaultLocation = LatLng(37.4223, -122.0848);
   LatLng? _currentPosition;
+  LatLng? _destinationPosition;
   Set<Marker> _markers = {};
 
   @override
   void initState() {
     super.initState();
     _getLocationUpdates();
-    if (widget.locationName != null) {
-      _markLocation(widget.locationName!);
-    }
   }
 
   @override
@@ -56,7 +55,7 @@ class LocationPageState extends State<LocationPage> {
               onMapCreated: ((GoogleMapController controller) =>
                   _mapController.complete(controller)),
               initialCameraPosition: CameraPosition(
-                target: _defaultLocation,
+                target: _currentPosition!,
                 zoom: 13,
               ),
               markers: Set<Marker>.of(_markers),
@@ -113,6 +112,9 @@ class LocationPageState extends State<LocationPage> {
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
           _moveCameraToPosition(_currentPosition!);
         });
+        if (widget.locationName != null) {
+          _markLocation(widget.locationName!);
+        }
       }
     });
   }
@@ -128,9 +130,8 @@ class LocationPageState extends State<LocationPage> {
           icon: BitmapDescriptor.defaultMarker,
           position: LatLng(location.latitude, location.longitude),
         );
+        _destinationPosition = LatLng(location.latitude, location.longitude);
         setState(() {
-          _currentPosition = LatLng(location.latitude, location.longitude);
-          _moveCameraToPosition(_currentPosition!);
           _markers.add(newLocationMarker);
         });
       } else {
@@ -139,10 +140,34 @@ class LocationPageState extends State<LocationPage> {
     } catch (e) {
       print('Error: $e');
     }
+    getPolylinePoints().then((coordinates) => {
+          print(coordinates),
+        });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<List<LatLng>> getPolylinePoints() async {
+    List<LatLng> polylineCoordinates = [];
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      Google_maps_api,
+      PointLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+      PointLatLng(
+          _destinationPosition!.latitude, _destinationPosition!.longitude),
+      travelMode: TravelMode.driving,
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    } else {
+      print(result.errorMessage);
+    }
+    print("Inside polyline points");
+    return polylineCoordinates;
   }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 }
