@@ -130,8 +130,10 @@ class LocationPageState extends State<LocationPage> {
         geo.Location location = locations.first;
         Marker newLocationMarker = Marker(
           markerId: MarkerId("_newLocation"),
-          icon: BitmapDescriptor.defaultMarker,
           position: LatLng(location.latitude, location.longitude),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueCyan,
+          ),
         );
         _destinationPosition = LatLng(location.latitude, location.longitude);
         setState(() {
